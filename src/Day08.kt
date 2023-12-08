@@ -114,10 +114,10 @@ fun main() {
 
     // test if implementation meets criteria from the description, like:
     val testInput = readInput("Day08_test")
-//    check(part1(testInput) == 6)
+    check(part1(testInput) == 6)
     check(part2(testInput) == 6L)
 
     val input = readInput("Day08")
- //   part1(input).println()
+    part1(input).println()
     part2(input).println()
 }

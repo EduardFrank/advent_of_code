@@ -5,35 +5,23 @@ fun main() {
 
     data class Point(val r: Int, val c: Int)
 
-    fun shortestPathPart(G: Array<CharArray>, s: Point, otherPoints: List<Point>, emptyCols: Set<Int>, emptyRows: Set<Int>, factor: Int, D: MutableList<Long>) {
-        val V = Array(G.size) { BooleanArray(G[0].size) }
+    fun shortestPathPart(G: Array<CharArray>, s: Point, e: Point, emptyCols: Set<Int>, emptyRows: Set<Int>, factor: Int): Long {
+        val distance = Math.abs(e.r - s.r) + Math.abs(e.c - s.c)
 
-        data class Node(val v: Point, val d: Long)
-
-        val q = mutableListOf<Node>()
-        q.add(Node(s, 0))
-
-        while (q.isNotEmpty()) {
-            val n = q.removeAt(0)
-
-            if (V[n.v.r][n.v.c]) continue
-            V[n.v.r][n.v.c] = true
-
-            for (p in otherPoints) {
-                if (n.v.r == p.r && n.v.c == p.c) {
-                    D.add(n.d)
-                }
-            }
-
-            for (i in 0 until DX.size) {
-                val r = n.v.r + DY[i]
-                val c = n.v.c + DX[i]
-
-                if (r < 0 || r >= G.size || c < 0 || c >= G[0].size) continue
-
-                q.add(Node(Point(r, c), n.d + 1 + if (emptyCols.contains(c) || emptyRows.contains(r)) factor - 1 else 0))
+        var diff = 0L
+        for (r in Math.min(s.r, e.r) until Math.max(s.r, e.r)) {
+            if (emptyRows.contains(r)) {
+                diff++
             }
         }
+
+        for (c in Math.min(s.c, e.c) until Math.max(s.c, e.c)) {
+            if (emptyCols.contains(c)) {
+                diff++
+            }
+        }
+
+        return distance + (factor - 1) * diff
     }
 
     fun partHelp(I: List<String>, factor: Int): Long {
@@ -71,12 +59,10 @@ fun main() {
 
         var ret = 0L
         for (i in 0 until galaxies.size) {
-            val otherPoints = galaxies.subList(i + 1, galaxies.size)
-            val d = mutableListOf<Long>()
-
-            shortestPathPart(G, galaxies[i], otherPoints, emptyCols, emptyRows, factor, d)
-
-            ret += d.sum()
+            for (j in i + 1 until galaxies.size) {
+                val d = shortestPathPart(G, galaxies[i], galaxies[j], emptyCols, emptyRows, factor)
+                ret += d
+            }
         }
 
         return ret

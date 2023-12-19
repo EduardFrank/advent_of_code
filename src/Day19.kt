@@ -210,8 +210,8 @@ fun main() {
                 when (action) {
                     is CompareAction -> {
 
-                        for (i in 0 until names.length) {
-                            val name = "${names[i]}"
+                        for (element in names) {
+                            val name = "$element"
                             if (action.name == name) {
                                 val range = state.getRange(name)
 
@@ -249,7 +249,7 @@ fun main() {
             return ret
         }
 
-        return apply("in", State("xmas".map { it.toString() to 1..4000 }.toMap()))
+        return apply("in", State(names.map { it.toString() to 1..4000 }.toMap()))
     }
 
     // test if implementation meets criteria from the description, like:
